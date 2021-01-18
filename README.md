@@ -1,2 +1,2 @@
 # codeforces
-this repo will contain my codeforces solutions
+this repo contains my solutions to some problems on codeforces.
