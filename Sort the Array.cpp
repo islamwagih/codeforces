@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #define EPS 1e-9
 #define endl '\n'
+#define MOD(_a, _n) (((a%n)+n)%n)
 #define getSize(_s) (int)_s.size()
 using namespace std;
 typedef long long ll;
@@ -11,79 +12,40 @@ inline void fastInputOutput(){
     cin.tie(0);cout.tie(0);
 }
 
-class Logger{
-    bool loggerIsWorking = 1;
-public:
-    void log(char* msg){
-        if(loggerIsWorking){
-            cout<<msg<<endl;
-        }
+const int N = (2e5)+5;
+int arr[N];
+int n;
+bool sorted(){
+    for(int i=0;i<n-1;i++){
+        if(arr[i] > arr[i+1]) return false;
     }
-    void log(string& msg){
-        if(loggerIsWorking){
-            cout<<msg<<endl;
-        }
-    }
-    void log(string&& msg){
-        if(loggerIsWorking){
-            cout<<msg<<endl;
-        }
-    }
-    void turnOf(){
-        loggerIsWorking = 0;
-    }
-    void turnOn(){
-        loggerIsWorking = 1;
-    }
-};
-
+    return true;
+}
 int main(){
-    fastInputOutput();Logger screen;
-    int n;cin>>n;
-    int* arr = new int[n];
-    for(int i=0;i<n;i++){
-        cin>>arr[i];
-    }
-    ///catch the start of the error
-    int first = -1, last = -1, i = 0;
-    while(i<n-1){
+
+    fastInputOutput();
+    cin>>n;
+    for(int i=0;i<n;i++) cin>>arr[i];
+    int low = -1;
+    for(int i=0;i<n-1;i++){
         if(arr[i] > arr[i+1]){
-            first = i;
-            while(i < n-1){
-                if(arr[i] >= arr[i+1]){
-                    i++;
-                }else{
-                    last = i;
-                    break;
-                }
-            }
-            if(last == -1){
-                last = n-1;
-            }
+            low = i;
             break;
         }
-        i++;
     }
-    if(first == -1){
-        cout<<"yes"<<endl;
-        cout<<1<<' '<<1<<endl;
+    if(low == -1){
+        cout<<"yes\n1 1\n";
     }else{
-        int low = first, high = last;
-        while(low < high){
-            swap(arr[low], arr[high]);
-            low++, high--;
+        int hold = arr[low], high = low+1;
+        while(high < n && arr[high] < hold) high++;
+        reverse(arr+low, arr+high);
+        if(sorted()){
+            cout<<"yes\n";
+            cout<<low+1<<' '<<high<<endl;
+        }else{
+            cout<<"no\n";
         }
-        ///check if sorted now
-        for(int i=0;i<n-1;i++){
-            if(arr[i] > arr[i+1]){
-                cout<<"no\n";
-                return 0;
-            }
-        }
-        cout<<"yes"<<endl;
-        cout<<first+1<<' '<<last+1<<endl;
     }
-    delete[] arr;
     return 0;
-}
 
+}
