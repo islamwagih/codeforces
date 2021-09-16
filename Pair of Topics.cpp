@@ -11,23 +11,26 @@ inline void fastInputOutput(){
     ios_base::sync_with_stdio(0);
     cin.tie(0);cout.tie(0);
 }
-const int N = 1e5 + 5;
-int arr[N];
+const int N = 2e5 + 5;
+int A[N], B[N], C[N];
+
 int main(){
 
     fastInputOutput();
-    int n,t;cin>>n>>t;
-    for(int i=0;i<n;i++) cin>>arr[i];
-    int l = 0, r = 0, mx = 0;
-    while(l < n){
-        while(r < n && arr[r] <= t){
-            mx = max(mx, r-l+1);
-            t-=arr[r];
-            r++;
+    int n;cin>>n;
+    for(int i=0;i<n;i++) cin>>A[i];
+    for(int i=0;i<n;i++) cin>>B[i];
+    for(int i=0;i<n;i++) C[i] = A[i] - B[i];
+    sort(C, C+n);
+    ll pairs = 0;
+    for(int i=0;i<n;i++){
+        int idx = upper_bound(C+i+1, C+n, -C[i])-C;
+        if(idx != n){
+            pairs += n-idx;
         }
-        t+=arr[l++];
     }
-    cout<<mx<<endl;
+    cout<<pairs<<endl;
     return 0;
 
 }
+
