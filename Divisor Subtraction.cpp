@@ -22,8 +22,8 @@ bool isPrime(ll n){
 
 ll firstPrime(ll n){
     for(ll i=3;i<n;i+=2){
-        if(isPrime(i) && n%i == 0){
-                return i;
+        if(n%i == 0){
+            return i;
         }
     }
 }
