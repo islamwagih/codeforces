@@ -22,16 +22,13 @@ const int M = 2*N;
 
 int frq[N];
 int n;
-int arr[N];
-int lowerBound = -1, upperBound = -1;
+int lowerBound = INT_MAX, upperBound = INT_MIN;
 
 ll dp[N];
 ll solve(ll val){
     if(val > upperBound) return 0;
     if(dp[val] != -1) return dp[val];
-    ///pick the current item
     ll op1 = frq[val]*val+solve(val+2);
-    ///leave it
     ll op2 = solve(val+1);
     return dp[val] = max(op1, op2);
 }
@@ -40,18 +37,11 @@ int main(){
     fastInputOutput();
     memset(dp, -1, sizeof dp);
     cin>>n;
-    for(int i=0;i<n;i++) cin>>arr[i], frq[arr[i]]++;
-    for(int i=0;i<N;i++){
-        if(frq[i] != 0){
-            lowerBound = i;
-            break;
-        }
-    }
-    for(int i=N-1;i>-1;i--){
-        if(frq[i] != 0){
-            upperBound = i;
-            break;
-        }
+    for(int i=0;i<n;i++){
+        int x;cin>>x;
+        frq[x]++;
+        lowerBound = min(lowerBound, x);
+        upperBound = max(upperBound, x);
     }
     cout<<solve(lowerBound)<<endl;
 
