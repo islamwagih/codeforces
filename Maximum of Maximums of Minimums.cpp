@@ -21,30 +21,42 @@ const int inf = 1e5+5;
 const int M = 2*N;
 const int mod = 1e9+7;
 
-void printSet(multiset<int> s){
-    for(auto i:s) cout<<i<<' ';
-    cout<<endl;
+int Log(int x){
+    return 31-__builtin_clz(x);
 }
+
+vector<vector<int>> buildTable(vector<int>& arr){
+    int n = arr.size();
+    vector<vector<int>> table(n, vector<int>(Log(n)+1));
+    for(int i=0;i<n;i++) table[i][0] = arr[i];
+    for(int j=1;(1<<j)<=n;j++){
+        for(int i=0;i+(1<<j)-1<n;i++){
+            table[i][j] = min(table[i][j-1], table[i+(1<<(j-1))][j-1]);
+        }
+    }
+    return table;
+}
+
+int query(int l, int r, vector<vector<int>>& table){
+    int len = r-l+1, j = Log(len);
+    return min(table[l][j], table[r-(1<<j)+1][j]);
+}
+
 int main(){
     fastInputOutput();
     int n, k;cin>>n>>k;
     vector<int>vec(n);
-    for(auto& i:vec)cin>>i;
+    int mn = INT_MAX, mx = INT_MIN;
+    for(auto& i:vec) cin>>i, mn = min(mn, i), mx = max(mx, i);
     if(k == 1){
-        cout<<*min_element(vec.begin(), vec.end());
+        cout<<mn<<endl;
     }else if(k == 2){
-        multiset<int> A, B;
-        for(int i=0;i<n-1;i++) A.insert(vec[i]);
-        B.insert(vec[n-1]);
-        int best = max(*A.begin(), *B.begin());
-        for(int i=n-2;i>0;i--){
-            A.erase(A.find(vec[i]));
-            B.insert(vec[i]);
-            best = max(best, max(*A.begin(), *B.begin()));
-        }
+        int best = INT_MIN;
+        auto table = buildTable(vec);
+        for(int i=0;i<n-1;i++) best = max(best, max(query(0, i, table), query(i+1, n-1, table)));
         cout<<best<<endl;
     }else{
-        cout<<*max_element(vec.begin(), vec.end());
+        cout<<mx<<endl;
     }
     return 0;
 }
