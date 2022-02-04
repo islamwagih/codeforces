@@ -1,8 +1,13 @@
 #include <bits/stdc++.h>
 #define EPS 1e-9
 #define endl '\n'
+#define MOD(_a, _n) (((a%n)+n)%n)
 #define getSize(_s) (int)_s.size()
+#define F first
+#define S second
+
 using namespace std;
+
 typedef long long ll;
 typedef unsigned long long ull;
 
@@ -11,36 +16,35 @@ inline void fastInputOutput(){
     cin.tie(0);cout.tie(0);
 }
 
-multiset<int> arr;
+const int N = 1e2+5;
+const int inf = 1e8+5;
+const int M = 2*N;
+const int mod = 1e9+7;
+
+int cnt(vector<int>& arr, int x){
+    int ans = 0;
+    for(int i:arr) if(i <= x) ans++;
+    return ans;
+}
+
 int main(){
     fastInputOutput();
     int n, k;cin>>n>>k;
-    for(int i=0;i<n;i++){
-        int val;cin>>val;
-        arr.insert(val);
+    vector<int> arr(n);
+    for(int& i:arr) cin>>i;
+    int low = 0, high = 1e9+1;
+    while(low < high-1){
+        int mid = (low+high)/2;
+        if(cnt(arr, mid) <= k){
+            low = mid;
+        }else{
+            high = mid;
+        }
     }
-    if(k > 0 && k < n){
-        auto it = arr.begin();
-        advance(it, k-1);
-        int first = *it;
-        advance(it, 1);
-        int second = *it;
-        if(second > first){
-            cout<<first<<endl;
-        }else{
-            cout<<-1<<endl;
-        }
-    }else if(k == 0){
-        int smallest = *(arr.begin());
-        if(smallest == 1){
-            cout<<-1<<endl;
-        }else{
-            cout<<1<<endl;
-        }
+    if(low > 0 && cnt(arr, low) == k){
+        cout<<low<<endl;
     }else{
-        int biggest = *(arr.rbegin());
-        cout<<biggest<<endl;
+        cout<<-1<<endl;
     }
     return 0;
 }
- 

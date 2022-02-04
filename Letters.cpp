@@ -1,8 +1,13 @@
 #include <bits/stdc++.h>
 #define EPS 1e-9
 #define endl '\n'
+#define MOD(_a, _n) (((a%n)+n)%n)
 #define getSize(_s) (int)_s.size()
+#define F first
+#define S second
+
 using namespace std;
+
 typedef long long ll;
 typedef unsigned long long ull;
 
@@ -11,31 +16,27 @@ inline void fastInputOutput(){
     cin.tie(0);cout.tie(0);
 }
 
+const int N = 2e5+10;
+const int inf = 1e8+5;
+const int M = 2*N;
+const int mod = 1e9+7;
+
+
+
 int main(){
     fastInputOutput();
     int n, m;cin>>n>>m;
-    ll* dorms = new ll[n],*letterRooms = new ll[m];
-    for(int i=0;i<n;i++){
-        cin>>dorms[i];
+    vector<ll> floor(n+1);
+    floor[0] = 0;
+    for(int i=1;i<=n;i++){
+        cin>>floor[i];
+        floor[i]+=floor[i-1];
     }
+    int fi = 0, sz = n+1;
     for(int i=0;i<m;i++){
-        cin>>letterRooms[i];
-    }
-    ll* dormsPrefixSum = new ll[n];
-    dormsPrefixSum[0] = dorms[0];
-    for(int i=1;i<n;i++){
-        dormsPrefixSum[i] = dormsPrefixSum[i-1]+dorms[i];
-    }
-    for(int i=0;i<m;i++){
-        ll currLetterRoom = letterRooms[i];
-        int index = lower_bound(dormsPrefixSum, dormsPrefixSum+n, currLetterRoom)-dormsPrefixSum;
-        int dorm = index+1; ll room;
-        if(index == 0){
-            room = currLetterRoom;
-        }else{
-            room = currLetterRoom-dormsPrefixSum[index-1];
-        }
-        cout<<dorm<<" "<<room<<endl;
+        ll query;cin>>query;
+        while(fi < sz && floor[fi] < query) fi++;
+        cout<<fi<<' '<<query-floor[fi-1]<<endl;
     }
     return 0;
 }
