@@ -3,7 +3,11 @@
 #define endl '\n'
 #define MOD(_a, _n) (((a%n)+n)%n)
 #define getSize(_s) (int)_s.size()
+#define F first
+#define S second
+
 using namespace std;
+
 typedef long long ll;
 typedef unsigned long long ull;
 
@@ -12,50 +16,66 @@ inline void fastInputOutput(){
     cin.tie(0);cout.tie(0);
 }
 
-const int N = 1e5+5;
-const int inf = 2e9+1;
+const int N = 2e5+10;
+const int inf = 1e9+5;
+const int M = 2*N;
+const int mod = 1e9+7;
 
-pair<int, int> start, finish;
-map<pair<int, int>, bool> allowed;
+struct pair_hash {
+    inline std::size_t operator()(const std::pair<int,int> & v) const {
+        return v.first*31+v.second;
+    }
+};
 
-int dx[8] = {+0, +0, +1, -1, +1, -1, +1, -1};
-int dy[8] = {+1, -1, +0, +0, +1, -1, -1, +1};
 
-int bfs(){
-    queue<pair<int, int>> Q;
-    Q.push({start.first, start.second});
-    allowed[{start.first, start.second}] = 0;
-    int dis = 0;
-    while(!Q.empty()){
-        int sz = Q.size();
+int dx[8] = {-1, +1, +1, -1, +1, -1, +0, +0};
+int dy[8] = {+0, +0, +1, +1, -1, -1, +1, -1};
+
+bool valid(int x, int y){
+    return x > 0 && y > 0 && x <= 1e9 && y <= 1e9;
+}
+
+unordered_set<pair<int, int>, pair_hash> allowed;
+
+int bfs(int x1, int y1, int x2, int y2){
+    queue<int> xs, ys;
+    xs.push(x1), ys.push(y1);
+    int steps = 0;
+    allowed.erase({x1, y1});
+    while(xs.size()){
+        int sz = xs.size();
         while(sz--){
-            int xo = Q.front().first, yo = Q.front().second;
-            if(xo == finish.first && yo == finish.second) return dis;
-            Q.pop();
+            int currX = xs.front();xs.pop();
+            int currY = ys.front();ys.pop();
+            if(currX == x2 && currY == y2) return steps;
             for(int k=0;k<8;k++){
-                int newX = xo+dx[k];
-                int newY = yo+dy[k];
-                if(allowed[{newX, newY}]){
-                    Q.push({newX, newY});
-                    allowed[{newX, newY}] = 0;
+                int newX = currX+dx[k];
+                int newY = currY+dy[k];
+                if(valid(newX, newY) && allowed.find({newX, newY}) != allowed.end()){
+                    xs.push(newX);
+                    ys.push(newY);
+                    allowed.erase({newX, newY});
                 }
             }
         }
-        dis++;
+        steps++;
     }
     return -1;
 }
 
 int main(){
+
     fastInputOutput();
-    cin>>start.first>>start.second;
-    cin>>finish.first>>finish.second;
+    allowed.reserve(1e5);
+    int x1, y1, x2, y2;
+    cin>>x1>>y1>>x2>>y2;
     int n;cin>>n;
-    for(int i=1;i<=n;i++){
-        int r, a, b;
-        cin>>r>>a>>b;
-        while(a <= b) allowed[{r, a++}] = 1;
+    while(n--){
+        int r, a, b;cin>>r>>a>>b;
+        while(a <= b) allowed.insert({r, a++});
     }
-    cout<<bfs()<<endl;
+
+    cout<<bfs(x1, y1, x2, y2)<<endl;
+
     return 0;
 }
