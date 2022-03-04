@@ -21,13 +21,7 @@ const int inf = 1e7+5;
 const int M = 2*N;
 const int mod = 1e9+7;
 
-ll factDp[15];
-ll fact(ll x){
-    if(x <= 1) return 1;
-    if(factDp[x] != -1) return factDp[x];
-    return factDp[x] = x*fact(x-1);
-}
-
+ll fact[15];
 
 int setBits(ll x){
     int cnt = 0;
@@ -40,7 +34,8 @@ int setBits(ll x){
 
 int main(){
     fastInputOutput();
-    memset(factDp, -1, sizeof factDp);
+    fact[0] = 1;
+    for(int i=1;i<15;i++) fact[i] = fact[i-1]*i;
     int t;cin>>t;
     while(t--){
         ll n;cin>>n;
@@ -51,7 +46,7 @@ int main(){
             for(int i=0;i<15;i++){
                 if(mask & (1<<i)){
                     //Calc ith factorial
-                    sum += fact(i);
+                    sum += fact[i];
                     if(sum > n) break;
                     cnt++;
                 }
