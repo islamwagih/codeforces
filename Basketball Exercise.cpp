@@ -76,18 +76,20 @@ ll arr1[N];
 ll arr2[N];
 
 
-ll solve(int i, int s){
-    if(i == n) return 0;
-    ll& ret = dp[i][s];
-    if(~ret) return ret;
-    if(s == 0){
-        ret = max(solve(i+1, 0), max(arr1[i]+solve(i+1,2), arr2[i]+solve(i+1, 1)));
-    }else if(s == 1){
-        ret = max(solve(i+1, 0), arr1[i]+solve(i+1, 2));
-    }else{
-        ret = max(solve(i+1, 0), arr2[i]+solve(i+1, 1));
+ll solve(){
+    for(int s=0;s<3;s++) dp[n][s] = 0;
+    for(int i=n-1;i>=0;i--){
+        for(int s=0;s<3;s++){
+            if(s == 0){
+                dp[i][s] = max(dp[i+1][0], max(arr1[i]+dp[i+1][2], arr2[i]+dp[i+1][1]));
+            }else if(s == 1){
+                dp[i][s] = max(dp[i+1][0], arr1[i]+dp[i+1][2]);
+            }else{
+                dp[i][s] = max(dp[i+1][0], arr2[i]+dp[i+1][1]);
+            }
+        }
     }
-    return ret;
+    return dp[0][0];
 }
 
 
@@ -103,13 +105,12 @@ int32_t main(){
 #endif
     //startTime();
 
-    memset(dp, -1, sizeof dp);
     cin>>n;
     for(int i=0;i<n;i++) cin>>arr1[i];
     for(int i=0;i<n;i++) cin>>arr2[i];
 
-    cout<<solve(0, 0)<<endl;
-    
+    cout<<solve()<<endl;
+
 
 
     //displayTime();
